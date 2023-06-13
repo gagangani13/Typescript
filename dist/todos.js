@@ -7,17 +7,18 @@ router.get('/', (req, res, next) => {
     res.status(200).json({ todos: todos });
 });
 router.post('/todo', (req, res, next) => {
+    const body = req.body;
     const newTodo = {
         id: Math.random().toString(),
-        text: req.body.text
+        text: body.text
     };
     todos.push(newTodo);
     res.send(todos);
 });
-router.delete('/:Id', (req, res, next) => {
-    const Id = String(req.params.Id);
+router.delete('/:id', (req, res, next) => {
+    const params = req.params;
     const newArr = todos.filter((item) => {
-        return item.id !== Id;
+        return item.id !== params.id;
     });
     if (newArr.length === todos.length) {
         return res.status(404).send(newArr);
@@ -27,13 +28,14 @@ router.delete('/:Id', (req, res, next) => {
         res.send(newArr);
     }
 });
-router.post('/edit/:Id', (req, res, next) => {
-    const Id = String(req.params.Id);
+router.post('/edit/:id', (req, res, next) => {
+    const body = req.body;
+    const params = req.params;
     let flag = false;
     const newArr = todos.map((item) => {
-        if (item.id === Id) {
+        if (item.id === params.id) {
             flag = true;
-            return item.text = req.body.text;
+            return { text: body.text, id: params.id };
         }
         else {
             return item;
